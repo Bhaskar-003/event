@@ -1,0 +1,347 @@
+/* HOD Dashboard Layout */
+.hod-dashboard {
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(to right, #eef2f3, #8e9eab);
+}
+
+/* Header */
+.dashboard-header {
+  background-color: #2c3e50;
+  color: #ffffff;
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.95rem;
+}
+
+.logout-button {
+  padding: 6px 14px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c0392b;
+}
+
+.add-event-toggle {
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-event-toggle:hover {
+  background-color: #2980b9;
+}
+
+/* Main Body Layout */
+.dashboard-body {
+  display: flex;
+  flex: 1;
+}
+
+/* Sidebar - Matching Faculty Dashboard Style */
+.sidebar {
+  width: 220px;
+  background-color: #ecf0f1;
+  padding: 20px 15px;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h3 {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 10px 18px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  background-color: #bdc3c7;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.sidebar li:hover,
+.sidebar li.active {
+  background-color: #3498db;
+  color: white;
+  font-weight: bold;
+}
+
+.sidebar li button {
+  all: unset; /* remove default button styling */
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 40px;
+  background-color: white;
+  border-radius: 0 0 0 12px;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Search Bar Styles */
+.search-bar {
+  margin-bottom: 15px;
+}
+
+.search-bar input[type="text"] {
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.search-bar input[type="text"]:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* General Table Styling */
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.event-table th,
+.event-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.event-table thead {
+  background-color: #ecf0f1;
+}
+
+.event-table th {
+  background-color: #f2f2f2;
+}
+
+.event-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+/* Action Buttons in Table */
+.edit-button,
+.delete-button {
+  padding: 6px 10px;
+  font-size: 14px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.edit-button {
+  background-color: #2980b9;
+}
+
+.edit-button:hover {
+  background-color: #1c5e7c;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+/* Assign Section */
+.assign-row {
+  background-color: #fdfefe;
+  border: 1px solid #ccc;
+  border-left: 5px solid #3498db;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.assign-row p {
+  margin: 5px 0;
+  color: #34495e;
+}
+
+.assign-row select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
+  width: 250px;
+  font-size: 0.95rem;
+}
+
+.assign-row button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.assign-row button:hover {
+  background-color: #27ae60;
+}
+
+/* Faculty List */
+ul {
+  padding: 0;
+  list-style-type: none;
+}
+
+ul li {
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  padding: 12px 16px;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  color: #2c3e50;
+  border-left: 4px solid #3498db;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal content box */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Close button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+}
+
+.close-button:hover {
+  color: #000;
+}
+
+/* Form Inputs inside modal or form */
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modal-content button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #1c5e7c;
+}
+.event-count {
+  font-size: 0.9em;
+  color: #666;
+  font-weight: normal;
+}
+.filter-bar {
+  margin-bottom: 10px;
+}
+
+.filter-bar label {
+  margin-right: 10px;
+}
+
+.filter-bar select {
+  padding: 5px;
+  font-size: 14px;
+}
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: white;
+}
+
+.submitted {
+  background-color: #28a745; /* green */
+}
+
+.not-submitted {
+  background-color: #dc3545; /* red */
+}

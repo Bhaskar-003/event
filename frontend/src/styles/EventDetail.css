@@ -1,0 +1,35 @@
+.event-detail-page {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.back-button {
+  background-color: #003366;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.event-detail-card {
+  background-color: #f4f8ff;
+  border-left: 5px solid #007bff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: auto;
+}
+
+.event-detail-card h2 {
+  margin-top: 0;
+  color: #003366;
+}
+
+.event-detail-card p {
+  margin: 0.6rem 0;
+  font-size: 1.05rem;
+}

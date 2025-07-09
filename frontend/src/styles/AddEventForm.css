@@ -1,0 +1,51 @@
+/* styles/AddEventForm.css */
+
+.add-event-form {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-bottom: 30px;
+  max-width: 600px;
+}
+
+.add-event-form h2 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 22px;
+}
+
+.add-event-form input[type="text"],
+.add-event-form input[type="date"],
+.add-event-form input[type="time"],
+.add-event-form input[type="file"],
+.add-event-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+.add-event-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.add-event-form button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-event-form button:hover {
+  background-color: #0056b3;
+}
