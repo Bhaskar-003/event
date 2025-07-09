@@ -16,7 +16,9 @@ export default function FacultyDashboard() {
   const [editReport, setEditReport] = useState(null);
   const [editedObjective, setEditedObjective] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [eventFilter, setEventFilter] = useState('all');
+  const [filterDept, setFilterDept] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [searchText, setSearchText] = useState('');
   const email = sessionStorage.getItem('email');
   const role = sessionStorage.getItem('role');
   const navigate = useNavigate();
@@ -225,71 +227,97 @@ export default function FacultyDashboard() {
       case 'events':
         let filteredEvents = [...assignedEvents];
 
-        if (eventFilter === 'submitted') {
-          filteredEvents = assignedEvents.filter(ev => reports.some(r => r.eventId === ev._id));
-        } else if (eventFilter === 'pending') {
-          filteredEvents = assignedEvents.filter(ev => !reports.some(r => r.eventId === ev._id));
-        }
-
-        if (searchQuery.trim() !== '') {
-          const query = searchQuery.toLowerCase();
+        if (searchText) {
+          const query = searchText.toLowerCase();
           filteredEvents = filteredEvents.filter(ev =>
-            ev.title.toLowerCase().includes(query) || ev.venue.toLowerCase().includes(query)
+            ev.title.toLowerCase().includes(query) || ev.date.toLowerCase().includes(query)
           );
         }
 
+        if (filterDept) {
+          filteredEvents = filteredEvents.filter(ev => ev.department === filterDept);
+        }
+
+        if (filterStatus === 'submitted') {
+          filteredEvents = filteredEvents.filter(ev => reports.some(r => r.eventId === ev._id));
+        } else if (filterStatus === 'not-submitted') {
+          filteredEvents = filteredEvents.filter(ev => !reports.some(r => r.eventId === ev._id));
+        }
+
+        const submittedCount = filteredEvents.filter(ev => reports.some(r => r.eventId === ev._id)).length;
+        const notSubmittedCount = filteredEvents.length - submittedCount;
+
         return (
           <div>
-            <h3>Your Assigned Events ({filteredEvents.length})</h3>
+            <h3>Your Assigned Events</h3>
 
-            {/* Search Bar */}
-            <div style={{ marginBottom: '15px' }}>
-              <input
-                type="text"
-                placeholder="Search by event name or venue..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ padding: '8px', width: '300px' }}
-              />
-            </div>
+            {/* Stats Section */}
+            {filteredEvents.length > 0 && (
+              <div className="report-stats">
+                <p>
+                  <strong>Submitted:</strong> {submittedCount} | 
+                  <strong> Not Submitted:</strong> {notSubmittedCount}
+                </p>
+              </div>
+            )}
 
             {/* Filters */}
-            <div style={{ marginBottom: '15px' }}>
-              <label><input type="radio" name="filter" value="all" checked={eventFilter === 'all'} onChange={() => setEventFilter('all')} /> All Events</label>
-              <label style={{ marginLeft: '15px' }}><input type="radio" name="filter" value="submitted" checked={eventFilter === 'submitted'} onChange={() => setEventFilter('submitted')} /> Submitted Reports</label>
-              <label style={{ marginLeft: '15px' }}><input type="radio" name="filter" value="pending" checked={eventFilter === 'pending'} onChange={() => setEventFilter('pending')} /> Pending Reports</label>
+            <div className="event-filter-bar" style={{ marginBottom: '15px' }}>
+              <input
+                placeholder="Search by title/date"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                style={{ padding: '8px', width: '200px', marginRight: '10px' }}
+              />
+              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
+                <option value="">All Departments</option>
+                <option value="MCA">MCA</option>
+                <option value="MBA">MBA</option>
+                <option value="CSE">CSE</option>
+                <option value="AIML">AIML</option>
+              </select>
+              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={{ padding: '8px' }}>
+                <option value="">All Reports</option>
+                <option value="submitted">Submitted</option>
+                <option value="not-submitted">Not Submitted</option>
+              </select>
             </div>
 
+            {/* Count Display */}
+            <p className="event-count">Number of Events: {filteredEvents.length}</p>
+
             {/* Table */}
-            {filteredEvents.length > 0 ? (
-              <table className="events-table">
-                <thead>
-                  <tr>
-                    <th>Event Name</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Venue</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredEvents.map((ev) => {
-                    const reported = reports.some(r => r.eventId === ev._id);
-                    return (
-                      <tr key={ev._id} style={{ backgroundColor: reported ? '#e0ffe0' : 'transparent' }}>
-                        <td>{ev.title}</td>
-                        <td>{ev.date}</td>
-                        <td>{ev.time}</td>
-                        <td>{ev.venue}</td>
-                        <td>{reported ? 'Reported' : 'Pending'}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            ) : (
-              <p>No events match your criteria.</p>
-            )}
+            <table className="event-table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Dept</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                  <th>Progress</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredEvents.map((ev) => {
+                  const reported = reports.some(r => r.eventId === ev._id);
+                  return (
+                    <tr key={ev._id}>
+                      <td>{ev.title}</td>
+                      <td>{ev.department}</td>
+                      <td>{ev.date}</td>
+                      <td><button onClick={() => alert('View Report for ' + ev.title)}>View Report</button></td>
+                      <td>
+                        {reported ? (
+                          <span className="status submitted">Submitted</span>
+                        ) : (
+                          <span className="status not-submitted">Not Submitted</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         );
 
