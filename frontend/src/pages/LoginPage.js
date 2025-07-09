@@ -43,7 +43,7 @@ function LoginPage() {
       </header>
 
       <div className="login-container">
-        <h2>Login</h2>
+        <h2>Login Page</h2>
         <form onSubmit={handleLogin}>
           <select value={role} onChange={(e) => setRole(e.target.value)} required>
             <option value="">Select Role</option>
