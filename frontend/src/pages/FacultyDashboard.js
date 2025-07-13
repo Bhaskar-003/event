@@ -16,13 +16,13 @@ export default function FacultyDashboard() {
   const [editReport, setEditReport] = useState(null);
   const [editedObjective, setEditedObjective] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterDept, setFilterDept] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [searchText, setSearchText] = useState('');
   const email = sessionStorage.getItem('email');
   const role = sessionStorage.getItem('role');
   const navigate = useNavigate();
 
+  // Fetch user data
   useEffect(() => {
     if (email && role === 'faculty') {
       fetch(`http://localhost:5000/api/users?role=faculty`)
@@ -110,7 +110,9 @@ export default function FacultyDashboard() {
   const handleDeleteReport = async (id) => {
     const confirm = window.confirm('Delete this report?');
     if (!confirm) return;
+
     const res = await fetch(`http://localhost:5000/api/reports/${id}`, { method: 'DELETE' });
+
     if (res.ok) {
       alert('Deleted');
       setReports(prev => prev.filter(r => r._id !== id));
@@ -122,9 +124,9 @@ export default function FacultyDashboard() {
   const downloadPDF = () => {
     const doc = new jsPDF();
     doc.text('Faculty Event Reports', 14, 15);
-    const rows = reports.map((r, i) => [i + 1, r.title, r.date, r.time, r.venue, r.objective]);
+    const rows = reports.map((r, i) => [i + 1, r.title, r.date, r.time, r.venue]);
     autoTable(doc, {
-      head: [['#', 'Title', 'Date', 'Time', 'Venue', 'Objective']],
+      head: [['#', 'Title', 'Date', 'Time', 'Venue']],
       body: rows,
       startY: 25
     });
@@ -145,7 +147,7 @@ export default function FacultyDashboard() {
     const splitObjective = doc.splitTextToSize(report.objective, 180);
     doc.text(splitObjective, 14, 90);
     const nextLine = 90 + splitObjective.length * 7;
-    doc.text('It is helpful', 14, nextLine + 10);
+
     if (report.imageUrl) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -186,7 +188,7 @@ export default function FacultyDashboard() {
     const splitObjective = doc.splitTextToSize(report.objective, 180);
     doc.text(splitObjective, 14, 90);
     const nextLine = 90 + splitObjective.length * 7;
-    doc.text('It is helpful', 14, nextLine + 10);
+
     if (report.imageUrl) {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -226,16 +228,11 @@ export default function FacultyDashboard() {
     switch (activeTab) {
       case 'events':
         let filteredEvents = [...assignedEvents];
-
         if (searchText) {
           const query = searchText.toLowerCase();
           filteredEvents = filteredEvents.filter(ev =>
             ev.title.toLowerCase().includes(query) || ev.date.toLowerCase().includes(query)
           );
-        }
-
-        if (filterDept) {
-          filteredEvents = filteredEvents.filter(ev => ev.department === filterDept);
         }
 
         if (filterStatus === 'submitted') {
@@ -247,20 +244,86 @@ export default function FacultyDashboard() {
         const submittedCount = filteredEvents.filter(ev => reports.some(r => r.eventId === ev._id)).length;
         const notSubmittedCount = filteredEvents.length - submittedCount;
 
+        if (selectedEvent && !reports.some(r => r.eventId === selectedEvent._id)) {
+          return (
+            <div className="modern-form-container">
+              <div className="modern-form-card">
+                <h2>Submit Report for: {selectedEvent.title}</h2>
+                <form onSubmit={handleReportSubmit} className="modern-form">
+                  <div className="form-group">
+                    <label><strong>Date:</strong> {selectedEvent.date}</label>
+                  </div>
+                  <div className="form-group">
+                    <label><strong>Time:</strong> {selectedEvent.time}</label>
+                  </div>
+                  <div className="form-group">
+                    <label><strong>Venue:</strong> {selectedEvent.venue}</label>
+                  </div>
+                  <div className="form-group">
+                    <label><strong>Department:</strong> {user.department}</label>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="objective">Objective</label>
+                    <textarea
+                      id="objective"
+                      rows="5"
+                      placeholder="Enter objective..."
+                      value={objective}
+                      onChange={e => setObjective(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="image">Upload Image</label>
+                    <input
+                      type="file"
+                      id="image"
+                      accept="image/*"
+                      onChange={e => {
+                        setImage(e.target.files[0]);
+                        setImagePreview(URL.createObjectURL(e.target.files[0]));
+                      }}
+                      required
+                    />
+                  </div>
+                  {imagePreview && (
+                    <div className="form-group">
+                      <img src={imagePreview} alt="Preview" className="form-preview-image" />
+                    </div>
+                  )}
+                  <div className="form-actions">
+                    <button type="submit" className="btn-submit">Submit</button>
+                    <button
+                      type="button"
+                      className="btn-cancel"
+                      onClick={() => {
+                        setSelectedEvent(null);
+                        setImage(null);
+                        setImagePreview(null);
+                        setObjective('');
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div>
             <h3>Your Assigned Events</h3>
-
             {/* Stats Section */}
             {filteredEvents.length > 0 && (
               <div className="report-stats">
                 <p>
-                  <strong>Submitted:</strong> {submittedCount} | 
+                  <strong>Submitted:</strong> {submittedCount} |
                   <strong> Not Submitted:</strong> {notSubmittedCount}
                 </p>
               </div>
             )}
-
             {/* Filters */}
             <div className="event-filter-bar" style={{ marginBottom: '15px' }}>
               <input
@@ -269,32 +332,22 @@ export default function FacultyDashboard() {
                 onChange={(e) => setSearchText(e.target.value)}
                 style={{ padding: '8px', width: '200px', marginRight: '10px' }}
               />
-              <select value={filterDept} onChange={(e) => setFilterDept(e.target.value)} style={{ padding: '8px', marginRight: '10px' }}>
-                <option value="">All Departments</option>
-                <option value="MCA">MCA</option>
-                <option value="MBA">MBA</option>
-                <option value="CSE">CSE</option>
-                <option value="AIML">AIML</option>
-              </select>
               <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} style={{ padding: '8px' }}>
                 <option value="">All Reports</option>
                 <option value="submitted">Submitted</option>
                 <option value="not-submitted">Not Submitted</option>
               </select>
             </div>
-
             {/* Count Display */}
             <p className="event-count">Number of Events: {filteredEvents.length}</p>
-
             {/* Table */}
             <table className="event-table">
               <thead>
                 <tr>
                   <th>Event</th>
-                  <th>Dept</th>
                   <th>Date</th>
-                  <th>Action</th>
                   <th>Progress</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -303,9 +356,7 @@ export default function FacultyDashboard() {
                   return (
                     <tr key={ev._id}>
                       <td>{ev.title}</td>
-                      <td>{ev.department}</td>
                       <td>{ev.date}</td>
-                      <td><button onClick={() => alert('View Report for ' + ev.title)}>View Report</button></td>
                       <td>
                         {reported ? (
                           <span className="status submitted">Submitted</span>
@@ -313,59 +364,18 @@ export default function FacultyDashboard() {
                           <span className="status not-submitted">Not Submitted</span>
                         )}
                       </td>
+                      <td>
+                        {reported ? (
+                          <button disabled>Already Reported</button>
+                        ) : (
+                          <button onClick={() => setSelectedEvent(ev)}>Generate Report</button>
+                        )}
+                      </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
-          </div>
-        );
-
-      case 'generateReport':
-        return (
-          <div>
-            <h3>Generate Report</h3>
-            <ul className="event-list">
-              {assignedEvents.map(ev => {
-                const already = reports.some(r => r.eventId === ev._id);
-                return (
-                  <li key={ev._id} style={{ marginBottom: '15px', backgroundColor: already ? '#e0ffe0' : 'transparent', padding: '10px', border: '1px solid #ccc' }}>
-                    <p><strong>{ev.title}</strong> – {ev.date} at {ev.time} – {ev.venue}</p>
-                    {already ? (
-                      <p style={{ color: 'green' }}>Report already submitted.</p>
-                    ) : (
-                      <button onClick={() => setSelectedEvent(ev)}>Generate Report</button>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-            {selectedEvent && !reports.some(r => r.eventId === selectedEvent._id) && (
-              <form onSubmit={handleReportSubmit} className="generate-report-form">
-                <h4>Submit Report for: {selectedEvent.title}</h4>
-                <p><strong>Date:</strong> {selectedEvent.date}</p>
-                <p><strong>Time:</strong> {selectedEvent.time}</p>
-                <p><strong>Venue:</strong> {selectedEvent.venue}</p>
-                <p><strong>Department:</strong> {user.department}</p>
-                <label>Objective:</label><br />
-                <textarea value={objective} onChange={e => setObjective(e.target.value)} required /><br />
-                <label>Upload Image:</label><br />
-                <input type="file" accept="image/*" onChange={e => {
-                  setImage(e.target.files[0]);
-                  setImagePreview(URL.createObjectURL(e.target.files[0]));
-                }} required /><br />
-                {imagePreview && (
-                  <img src={imagePreview} alt="Preview" className="preview-image" />
-                )}
-                <button type="submit">Submit</button>
-                <button type="button" onClick={() => {
-                  setSelectedEvent(null);
-                  setImage(null);
-                  setImagePreview(null);
-                  setObjective('');
-                }}>Cancel</button>
-              </form>
-            )}
           </div>
         );
 
@@ -386,7 +396,11 @@ export default function FacultyDashboard() {
                 <table>
                   <thead>
                     <tr>
-                      <th>Title</th><th>Date</th><th>Time</th><th>Venue</th><th>Objective</th><th>Actions</th>
+                      <th>Title</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Venue</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -396,7 +410,6 @@ export default function FacultyDashboard() {
                         <td>{r.date}</td>
                         <td>{r.time}</td>
                         <td>{r.venue}</td>
-                        <td>{r.objective}</td>
                         <td>
                           <button onClick={() => downloadSinglePDF(r)}>Download</button>
                           <button onClick={() => viewSinglePDF(r)}>View</button>
@@ -410,6 +423,7 @@ export default function FacultyDashboard() {
                     ))}
                   </tbody>
                 </table>
+
                 {editReport && (
                   <div className="edit-form">
                     <h4>Edit Report</h4>
@@ -424,6 +438,7 @@ export default function FacultyDashboard() {
                     </form>
                   </div>
                 )}
+
               </>
             ) : <p>No reports available.</p>}
           </div>
@@ -453,7 +468,6 @@ export default function FacultyDashboard() {
         <aside className="dashboard-sidebar">
           <ul>
             <li onClick={() => setActiveTab('events')} className={activeTab === 'events' ? 'active' : ''}>Events</li>
-            <li onClick={() => setActiveTab('generateReport')} className={activeTab === 'generateReport' ? 'active' : ''}>Generate Report</li>
             <li onClick={() => setActiveTab('viewReport')} className={activeTab === 'viewReport' ? 'active' : ''}>View Report</li>
           </ul>
         </aside>

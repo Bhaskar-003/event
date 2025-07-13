@@ -8,11 +8,19 @@ function ViewEvents() {
   const [selectedDept, setSelectedDept] = useState('All');
   const [selectedTimeFilter, setSelectedTimeFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get('http://localhost:5000/api/events')
-      .then((response) => setEvents(response.data))
-      .catch((error) => console.error('Error fetching events:', error));
+      .then((response) => {
+        setEvents(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching events:', error);
+        setIsLoading(false);
+      });
   }, []);
 
   const toggleExpand = (id) => {
@@ -40,6 +48,18 @@ function ViewEvents() {
     return matchesDept && matchesSearch && matchesTime;
   });
 
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const isEventUpcoming = (dateString) => {
+    const eventDate = new Date(dateString);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return eventDate >= today;
+  };
+
   return (
     <>
       <header className="top-nav">
@@ -50,7 +70,7 @@ function ViewEvents() {
       </header>
 
       <div className="view-events-container">
-        <h2>All Events</h2>
+        <h2>Browse All Events</h2>
 
         {/* Search and Combined Filter Bar */}
         <div className="controls-bar">
@@ -77,37 +97,63 @@ function ViewEvents() {
             value={selectedTimeFilter}
             onChange={(e) => setSelectedTimeFilter(e.target.value)}
           >
-            <option value="All">All</option>
-            <option value="Upcoming">Upcoming</option>
-            <option value="Past">Past</option>
+            <option value="All">All Events</option>
+            <option value="Upcoming">Upcoming Events</option>
+            <option value="Past">Past Events</option>
           </select>
         </div>
 
-        {/* Events Display */}
-        <div className="cards-container">
-          {filteredEvents.length > 0 ? (
-            filteredEvents.map((event) => (
-              <div
-                key={event._id}
-                className={`event-card ${expandedId === event._id ? 'expanded' : ''}`}
-                onClick={() => toggleExpand(event._id)}
-              >
-                <h3>{event.title}</h3>
-                <p><strong>Department:</strong> {event.department}</p>
-
-                {expandedId === event._id && (
-                  <div className="event-details">
-                    <p><strong>Date:</strong> {event.date}</p>
-                    <p><strong>Time:</strong> {event.time}</p>
-                    <p><strong>Venue:</strong> {event.venue}</p>
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p>No matching events found.</p>
-          )}
+        {/* Events Counter */}
+        <div className="event-counter">
+          {filteredEvents.length} {filteredEvents.length === 1 ? 'event' : 'events'} found
         </div>
+
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading events...</p>
+          </div>
+        ) : (
+          /* Events Display */
+          <div className="cards-container">
+            {filteredEvents.length > 0 ? (
+              filteredEvents.map((event) => (
+                <div
+                  key={event._id}
+                  className={`event-card ${expandedId === event._id ? 'expanded' : ''}`}
+                  onClick={() => toggleExpand(event._id)}
+                >
+                  {isEventUpcoming(event.date) && <div className="upcoming-badge">Upcoming</div>}
+                  <h3>{event.title}</h3>
+                  <p><strong>Department:</strong> {event.department}</p>
+                  <p><strong>Date:</strong> {formatDate(event.date)}</p>
+                  
+                  {expandedId === event._id && (
+                    <div className="event-details">
+                      <p><strong>Time:</strong> {event.time}</p>
+                      <p><strong>Venue:</strong> {event.venue}</p>
+                      {event.description && (
+                        <p><strong>Description:</strong> {event.description}</p>
+                      )}
+                      <div className="card-footer">
+                        <span className="expand-hint">Click to collapse</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {expandedId !== event._id && (
+                    <div className="card-footer">
+                      <span className="expand-hint">Click for details</span>
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <p>No matching events found. Try adjusting your filters.</p>
+            )}
+          </div>
+        )}
       </div>
     </>
   );
