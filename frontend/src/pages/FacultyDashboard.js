@@ -292,7 +292,7 @@ export default function FacultyDashboard() {
                     </div>
                   )}
                   <div className="form-actions">
-                    <button type="submit" className="btn-submit">Submit</button>
+                    <button type="submit" className="btn-submit">Submit </button>
                     <button
                       type="button"
                       className="btn-cancel"
