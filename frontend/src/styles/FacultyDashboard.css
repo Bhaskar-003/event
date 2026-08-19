@@ -15,7 +15,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .dashboard-header h2 {
@@ -102,7 +102,7 @@ img.preview-image {
   margin-top: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Search input */
@@ -145,12 +145,17 @@ img.preview-image {
 }
 
 .dashboard-content td button:nth-child(1) {
-  background-color: #3498db;
+  background-color: #2ecc71; /* Green for Download/View */
   color: white;
 }
 
 .dashboard-content td button:nth-child(2) {
-  background-color: #e74c3c;
+  background-color: #3498db; /* Blue for Edit */
+  color: white;
+}
+
+.dashboard-content td button:nth-child(3) {
+  background-color: #e74c3c; /* Red for Delete */
   color: white;
 }
 
@@ -169,6 +174,8 @@ img.preview-image {
   border-radius: 6px;
   border: 1px solid #ccc;
   resize: vertical;
+  font-size: 0.95rem;
+  margin-bottom: 10px;
 }
 
 .edit-form button {
@@ -193,13 +200,6 @@ img.preview-image {
 
 .edit-form button:hover {
   opacity: 0.85;
-}
-
-/* Highlight for already submitted events */
-li[style*="background-color: rgb(224, 255, 224)"] {
-  font-weight: bold;
-  border-left: 4px solid #2ecc71;
-  padding-left: 14px;
 }
 
 /* Generate Report Form */
@@ -272,13 +272,14 @@ li[style*="background-color: rgb(224, 255, 224)"] {
   font-weight: bold;
   cursor: pointer;
   margin-left: 10px;
+  transition: background-color 0.2s ease;
 }
 
 .generate-report-form button[type="button"]:hover {
   background-color: #7f8c8d;
 }
 
-/* New: Event List with Report Button */
+/* Event List (for event table) */
 .event-list {
   list-style-type: none;
   padding: 0;
@@ -312,47 +313,183 @@ li[style*="background-color: rgb(224, 255, 224)"] {
 .event-list li button:hover {
   background-color: #2980b9;
 }
-.dashboard-content td button:nth-child(1) {
-  background-color: #2ecc71; /* Green for Download */
+
+/* Stats Section */
+.report-stats {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Filters Bar */
+.event-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.event-filter-bar input,
+.event-filter-bar select {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Count Display */
+.event-count {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Event Table */
+.event-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.event-table th,
+.event-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.event-table thead {
+  background-color: #f2f2f2;
+}
+
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+}
+
+.status.submitted {
+  background-color: green;
+}
+
+.status.not-submitted {
+  background-color: red;
+}
+
+/* Highlight for already submitted events in lists */
+li[style*="background-color: rgb(224, 255, 224)"] {
+  font-weight: bold;
+  border-left: 4px solid #2ecc71;
+  padding-left: 14px;
+}
+/* Container styling */
+.modern-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f5f7fa;
+}
+
+/* Card wrapper for the form */
+.modern-form-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Form title */
+.modern-form-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+/* Form layout */
+.modern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Label styling */
+.modern-form label {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+/* Form group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Textarea and input styles */
+.modern-form textarea,
+.modern-form input[type="file"] {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.modern-form textarea:focus,
+.modern-form input[type="file"]:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Preview image */
+.form-preview-image {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button container */
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Submit and cancel buttons */
+.btn-submit,
+.btn-cancel {
+  flex: 1;
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Submit button */
+.btn-submit {
+  background-color: #007bff;
   color: white;
 }
-.events-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+
+.btn-submit:hover {
+  background-color: #0056b3;
 }
 
-.events-table thead {
-  background-color: #f2f2f2;
+/* Cancel button */
+.btn-cancel {
+  background-color: #6c757d;
+  color: white;
 }
 
-.events-table th,
-.events-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-
-.events-table tr:nth-child(even) {
-  background-color: #fafafa;
-}
-.events-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.events-table thead {
-  background-color: #f2f2f2;
-}
-
-.events-table th,
-.events-table td {
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-}
-
-.events-table tr:nth-child(even) {
-  background-color: #fafafa;
+.btn-cancel:hover {
+  background-color: #5a6268;
 }
