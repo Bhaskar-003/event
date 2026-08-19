@@ -38,8 +38,11 @@ function LoginPage() {
 
   return (
     <>
-      <header className="login-header">
-        <div className="header-title">Department Event Management System</div>
+<header className="top-nav">
+        <div className="site-name">Department Event Management</div>
+        <div className="nav-buttons">
+          <button className="view-btn" onClick={() => window.location.href = '/'}>← Back</button>
+        </div>
       </header>
 
       <div className="login-container">
